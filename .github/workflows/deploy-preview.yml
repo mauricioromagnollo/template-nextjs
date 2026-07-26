@@ -1,0 +1,78 @@
+# Preview deployment to Vercel on every push to `main`.
+#
+# ---------------------------------------------------------------------------
+# Setup required after cloning this template
+# ---------------------------------------------------------------------------
+# Uses the same three secrets as `deploy-production.yml`:
+#
+#   VERCEL_TOKEN       https://vercel.com/account/tokens
+#   VERCEL_ORG_ID      `orgId`     from `.vercel/project.json` (run `vercel link`)
+#   VERCEL_PROJECT_ID  `projectId` from `.vercel/project.json`
+#
+# A preview deployment gets its own immutable URL and never touches the
+# production domain. Production ships only when a GitHub release is published,
+# from `deploy-production.yml`.
+# ---------------------------------------------------------------------------
+name: Deploy Preview
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Superseded pushes are cancelled: only the newest commit on `main` is worth a
+# preview URL.
+concurrency:
+  group: deploy-preview-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    name: Deploy to Vercel (preview)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment:
+      name: preview
+      url: ${{ steps.deploy.outputs.url }}
+    env:
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+      NEXT_TELEMETRY_DISABLED: 1
+      HUSKY: 0
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: npm
+
+      - name: Install Vercel CLI
+        run: npm install --global vercel@latest
+
+      - name: Pull Vercel environment information
+        run: vercel pull --yes --environment=preview --token="$VERCEL_TOKEN"
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+
+      - name: Build project artifacts
+        # No `--prod`: the build uses the preview environment variables.
+        run: vercel build --token="$VERCEL_TOKEN"
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+
+      - name: Deploy prebuilt artifacts
+        id: deploy
+        run: |
+          url=$(vercel deploy --prebuilt --archive=tgz --token="$VERCEL_TOKEN")
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+          echo "Preview deployed to $url" >> "$GITHUB_STEP_SUMMARY"
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}

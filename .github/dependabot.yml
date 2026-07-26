@@ -1,0 +1,99 @@
+# Dependabot keeps the toolchain current without turning the pull request list
+# into noise: updates land once a week, grouped, with Conventional Commit
+# prefixes that satisfy the `commitlint` job in `ci.yml`.
+#
+# Cloning this template? Adjust `day`/`time` to your timezone and lower
+# `open-pull-requests-limit` if weekly batches feel too large.
+version: 2
+
+updates:
+  # --------------------------------------------------------------------------
+  # npm dependencies
+  # --------------------------------------------------------------------------
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: '06:00'
+      timezone: America/Sao_Paulo
+    open-pull-requests-limit: 10
+    versioning-strategy: increase
+    labels:
+      - dependencies
+    commit-message:
+      prefix: 'chore(deps)'
+      prefix-development: 'chore(deps-dev)'
+    groups:
+      # Runtime dependencies ship to users, so they get their own pull request:
+      # a regression here is a production regression and deserves a focused
+      # review and a full CI run of its own.
+      production-dependencies:
+        dependency-type: production
+        update-types:
+          - minor
+          - patch
+      # Tooling churns far more often and only affects the build. Batching it
+      # keeps the review queue short.
+      development-dependencies:
+        dependency-type: development
+        update-types:
+          - minor
+          - patch
+    ignore:
+      # Majors of the framework and the type system are migrations, not
+      # dependency bumps: they are done deliberately, by hand, with the
+      # upstream upgrade guide open.
+      - dependency-name: next
+        update-types: [version-update:semver-major]
+      - dependency-name: react
+        update-types: [version-update:semver-major]
+      - dependency-name: react-dom
+        update-types: [version-update:semver-major]
+      - dependency-name: typescript
+        update-types: [version-update:semver-major]
+
+  # --------------------------------------------------------------------------
+  # GitHub Actions used by the workflows in this directory
+  # --------------------------------------------------------------------------
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: '06:00'
+      timezone: America/Sao_Paulo
+    open-pull-requests-limit: 5
+    labels:
+      - dependencies
+      - ci
+    commit-message:
+      prefix: 'ci(deps)'
+    groups:
+      github-actions:
+        patterns:
+          - '*'
+
+  # --------------------------------------------------------------------------
+  # Docker base images
+  # --------------------------------------------------------------------------
+  # Points at the repository root, where the `Dockerfile` lives. Dependabot
+  # simply reports no updates if the file is absent, so this entry is safe to
+  # keep even if you strip Docker out of the template.
+  - package-ecosystem: docker
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: '06:00'
+      timezone: America/Sao_Paulo
+    open-pull-requests-limit: 5
+    labels:
+      - dependencies
+      - docker
+    commit-message:
+      prefix: 'chore(deps)'
+    groups:
+      docker-images:
+        patterns:
+          - '*'

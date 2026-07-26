@@ -1,0 +1,197 @@
+# Main quality gate. Every pull request and every push to `main` must go
+# through this workflow before anything is released or deployed.
+#
+# Nothing here needs configuration to work on a fork or on a repository created
+# from this template: it only uses the checked-in Node version, npm and the
+# scripts declared in `package.json`.
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# One run per ref. Pushing a new commit to a pull request cancels the previous
+# run instead of paying for a build whose result is already obsolete.
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+# Least privilege: this workflow only reads the repository. Jobs that need more
+# (deploys, security uploads) live in their own workflow files with their own
+# scoped permissions.
+permissions:
+  contents: read
+
+env:
+  # Keep CI logs free of the Next.js telemetry notice and skip the ping.
+  NEXT_TELEMETRY_DISABLED: 1
+  # Git hooks are a local developer aid; CI runs the real checks directly.
+  HUSKY: 0
+
+jobs:
+  quality:
+    name: Quality (format, lint, types, unit tests, build)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # The checks below never push anything, so the job does not need the
+          # ambient `GITHUB_TOKEN` left behind in `.git/config`.
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          # Single source of truth: `.node-version` is what nvm/fnm and Docker
+          # read locally, so CI can never drift from the developer machine.
+          node-version-file: .node-version
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      # The steps below are ordered from cheapest to most expensive so a broken
+      # pull request fails in seconds instead of minutes. Formatting is a few
+      # hundred milliseconds; the production build is the slowest step and runs
+      # last, once everything else is known to be sound.
+
+      - name: Check formatting
+        run: npm run format:check
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Unit tests with coverage
+        run: npm run test:coverage
+
+      - name: Upload coverage report
+        # Uploaded on failure too: a coverage threshold violation is exactly
+        # when the HTML report is most useful for a reviewer.
+        if: ${{ success() || failure() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage/
+          retention-days: 14
+          if-no-files-found: warn
+
+      - name: Restore Next.js build cache
+        uses: actions/cache@v4
+        with:
+          path: .next/cache
+          # The lockfile pins the toolchain; the source hash busts the cache when
+          # application code changes, while `restore-keys` still reuses the
+          # previous build's cache to keep incremental builds fast.
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('package-lock.json') }}-${{ hashFiles('src/**/*.ts', 'src/**/*.tsx', 'src/**/*.css', 'next.config.ts', 'postcss.config.mjs') }}
+          restore-keys: |
+            ${{ runner.os }}-nextjs-${{ hashFiles('package-lock.json') }}-
+            ${{ runner.os }}-nextjs-
+
+      - name: Build
+        run: npm run build
+
+  e2e:
+    name: End-to-end tests (Playwright)
+    # Gated behind `quality`: there is no point spending minutes on browsers if
+    # the code does not even typecheck.
+    needs: quality
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Resolve Playwright version
+        # Browser binaries are tied to the exact Playwright release, so the cache
+        # key must be the resolved version from the installed package, not the
+        # (possibly ranged) specifier in `package.json`.
+        id: playwright
+        run: echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
+
+      - name: Restore Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ steps.playwright.outputs.version }}
+
+      - name: Restore Next.js build cache
+        uses: actions/cache@v4
+        with:
+          path: .next/cache
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('package-lock.json') }}-${{ hashFiles('src/**/*.ts', 'src/**/*.tsx', 'src/**/*.css', 'next.config.ts', 'postcss.config.mjs') }}
+          restore-keys: |
+            ${{ runner.os }}-nextjs-${{ hashFiles('package-lock.json') }}-
+            ${{ runner.os }}-nextjs-
+
+      - name: Build
+        # `playwright.config.ts` only starts `npm run start` when running on CI,
+        # so the production output has to exist before the suite runs.
+        run: npm run build
+
+      - name: Install Playwright browsers and OS dependencies
+        # A no-op download when the cache hit, but the `--with-deps` system
+        # libraries are not cached and must be installed on every run.
+        run: npm run test:e2e:install
+
+      - name: Run end-to-end tests
+        run: npm run test:e2e
+
+      - name: Upload Playwright report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 14
+          if-no-files-found: ignore
+
+  commitlint:
+    name: Conventional Commits
+    # Only meaningful on pull requests: on `main` the commits have already been
+    # validated by this job before the merge.
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # commitlint walks the range between the base and the head of the pull
+          # request, so the full history has to be available.
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate commit messages
+        # The SHAs go through the environment instead of being interpolated into
+        # the script, which keeps untrusted pull request data out of the shell.
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: npx commitlint --from "$BASE_SHA" --to "$HEAD_SHA" --verbose
