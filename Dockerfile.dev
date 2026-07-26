@@ -1,0 +1,32 @@
+# syntax=docker/dockerfile:1
+
+# Development image — used by docker-compose.yaml, never for deployments.
+#
+# The project source is bind-mounted over /app at run time, so the COPY below
+# only exists to make the image usable on its own; node_modules is kept out of
+# the way by an anonymous volume declared in the compose file.
+#
+# This stage deliberately runs as root: with a bind mount, the container writes
+# into the host working tree, and a fixed uid would break for anyone whose host
+# uid is not 1000. The trade-off is that generated files (.next, coverage, ...)
+# may end up root-owned on the host — `make clean` handles that with a sudo
+# fallback.
+
+FROM node:24.16.0-slim
+
+WORKDIR /app
+
+ENV NODE_ENV=development
+ENV NEXT_TELEMETRY_DISABLED=1
+# Next binds to localhost by default, which is unreachable from the host.
+ENV HOSTNAME=0.0.0.0
+ENV PORT=3000
+
+COPY package.json package-lock.json ./
+RUN npm ci
+
+COPY . .
+
+EXPOSE ${PORT}
+
+CMD ["npm", "run", "dev"]
