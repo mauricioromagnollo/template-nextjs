@@ -53,6 +53,7 @@ next-env.d.ts
 
 # MkDocs build output
 /site/
+!./src/config/site
 
 # AI assistant workspaces
 .agents
