@@ -33,34 +33,26 @@ yarn-error.log*
 
 # Env
 .env*
-# `!.env*.example` e não `!.env.example`: um futuro `.env.staging.example`
-# também precisa ser versionado.
+# `!.env*.example` rather than `!.env.example`: a future `.env.staging.example`
+# also needs to be committed.
 !.env*.example
 
 # Vercel
 .vercel
 
-# Typescript
+# TypeScript
 *.tsbuildinfo
 next-env.d.ts
 
 # Temporary
 tmp/
 
-# LinkedIn data export (personal data — never commit)
-.prismic/linkedin/
-
 # MkDocs build output
 site/
 
-# Ignore any AI Files
+# AI assistant workspaces
 .agents
+.claude
 .cursor
 .windsurf
-.claude
 .specs
-skills-lock.json
-
-# Http (Rest Client)
-*.http
-!requests_api.http
