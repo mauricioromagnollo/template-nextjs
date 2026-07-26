@@ -4,6 +4,13 @@
 # repositories get this for free; on a private repository it requires GitHub
 # Advanced Security, so delete this file if the template was cloned into a
 # private repository without it.
+#
+# ONE-TIME SETUP: code scanning has to be enabled before the upload step can
+# succeed, otherwise the analysis runs fine and then fails with "Code scanning is
+# not enabled for this repository". Enable it under
+# Settings > Code security > Code scanning, choosing "Advanced" (this workflow
+# IS the advanced configuration — do not also enable the default setup, since
+# the two conflict). Until then this job fails while everything else passes.
 name: CodeQL
 
 on:

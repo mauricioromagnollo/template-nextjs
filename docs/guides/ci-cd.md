@@ -141,6 +141,20 @@ Findings land in the repository's **Security** tab, not in the pull request diff
 this little application logic, expect it to be quiet — which is the point. It is a tripwire, not a
 linter.
 
+!!! warning "Enable code scanning once, or this job fails"
+
+    Code scanning is off by default on a fresh repository. The analysis itself still runs and
+    succeeds; it is the **upload** of the results that fails, with
+    `Code scanning is not enabled for this repository`. Every other job stays green, so it is easy to
+    misread as a broken workflow.
+
+    Fix it under **Settings :material-arrow-right: Code security :material-arrow-right: Code
+    scanning**, choosing **Advanced**. This workflow *is* the advanced configuration — do not also
+    enable the default setup, because the two conflict and GitHub will reject the upload.
+
+    On a private repository this requires GitHub Advanced Security. Without it, delete
+    `.github/workflows/codeql.yml`.
+
 ---
 
 ## The deploy workflows
