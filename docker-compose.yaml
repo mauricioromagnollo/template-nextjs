@@ -1,0 +1,44 @@
+# Local development stack. Production images are built from ./Dockerfile
+# instead — see `make docker-build`.
+#
+# Usage:
+#   make up      # start in the background
+#   make logs    # follow the dev server output
+#   make down    # stop and remove
+
+name: template-nextjs
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    image: template-nextjs-dev
+    container_name: template-nextjs-app
+    restart: unless-stopped
+    env_file:
+      # `required: false` keeps `docker compose up` working on a fresh clone,
+      # before anyone has run `make setup` to create .env.
+      - path: .env
+        required: false
+    environment:
+      PORT: ${PORT:-3000}
+    ports:
+      - '${PORT:-3000}:${PORT:-3000}'
+    volumes:
+      # Bind mount for hot reload: edits on the host are picked up immediately.
+      - ./:/app
+      # Anonymous volume shadowing the bind mount, so the container keeps the
+      # node_modules built for its own platform instead of the host's. Without
+      # it, native binaries compiled on macOS/Windows would leak into a Linux
+      # container (or the directory would simply be missing).
+      - /app/node_modules
+    networks:
+      - template-nextjs
+    # Keeps the TTY attached so Ctrl-C and interactive prompts behave.
+    stdin_open: true
+    tty: true
+
+networks:
+  template-nextjs:
+    driver: bridge

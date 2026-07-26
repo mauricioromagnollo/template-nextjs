@@ -1,0 +1,67 @@
+# Keep the build context small and reproducible: everything below is either
+# regenerated inside the image, irrelevant to the build, or must never be baked
+# into a layer.
+
+# Dependencies (reinstalled with `npm ci` inside the image)
+node_modules
+.pnp
+.pnp.js
+.yarn
+
+# Build output
+.next
+out
+build
+dist
+*.tsbuildinfo
+next-env.d.ts
+.swc
+.turbo
+
+# Tests and coverage
+coverage
+test-results
+playwright-report
+blob-report
+playwright/.cache
+
+# Version control and CI metadata
+.git
+.gitignore
+.gitattributes
+.github
+
+# Docker files themselves (read by the daemon, not needed in the context)
+Dockerfile
+Dockerfile.dev
+docker-compose.yaml
+docker-compose.yml
+.dockerignore
+
+# Documentation sources and MkDocs output
+docs
+site
+mkdocs.yml
+
+# Secrets — templates are kept so `.env.example` stays discoverable
+.env*
+!.env*.example
+
+# Platform / editor / OS
+.vercel
+.vscode
+.idea
+.DS_Store
+*.pem
+
+# AI assistant workspaces
+.agents
+.claude
+.cursor
+.windsurf
+.specs
+
+# Temporary
+tmp
+*.log
+npm-debug.log*
