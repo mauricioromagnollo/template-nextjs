@@ -12,7 +12,7 @@
 # may end up root-owned on the host — `make clean` handles that with a sudo
 # fallback.
 
-FROM node:24.16.0-slim
+FROM node:26.5.0-slim
 
 WORKDIR /app
 
