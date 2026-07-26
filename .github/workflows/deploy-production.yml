@@ -1,0 +1,94 @@
+# Production deployment to Vercel, triggered by publishing a GitHub release.
+#
+# ---------------------------------------------------------------------------
+# Setup required after cloning this template
+# ---------------------------------------------------------------------------
+# This workflow is inert until three repository secrets exist. Add them under
+# "Settings > Secrets and variables > Actions":
+#
+#   VERCEL_TOKEN       Personal or team access token, created at
+#                      https://vercel.com/account/tokens
+#   VERCEL_ORG_ID      Value of `orgId`     in `.vercel/project.json`
+#   VERCEL_PROJECT_ID  Value of `projectId` in `.vercel/project.json`
+#
+# Both IDs are produced locally by running `vercel link` once (the generated
+# `.vercel/` directory is git-ignored and must never be committed). They are
+# also available under the Vercel project's "Settings > General" page.
+#
+# Prefer running the deploy from CI rather than from Vercel's own Git
+# integration, so a release only ships code that already passed the `CI`
+# workflow. If you would rather let Vercel deploy on push, delete this file and
+# `deploy-preview.yml`.
+#
+# The `production` environment can additionally carry required reviewers or a
+# wait timer ("Settings > Environments"), turning this into a gated deploy.
+# ---------------------------------------------------------------------------
+name: Deploy Production
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+# Never run two production deploys at once, and never cancel one midway: an
+# interrupted deploy can leave the project pointing at a half-built output.
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    name: Deploy to Vercel (production)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment:
+      name: production
+      url: ${{ steps.deploy.outputs.url }}
+    env:
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+      NEXT_TELEMETRY_DISABLED: 1
+      HUSKY: 0
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: npm
+
+      - name: Install Vercel CLI
+        run: npm install --global vercel@latest
+
+      - name: Pull Vercel environment information
+        # Downloads the project settings and the production environment
+        # variables so the build below matches what Vercel would produce.
+        run: vercel pull --yes --environment=production --token="$VERCEL_TOKEN"
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+
+      - name: Build project artifacts
+        # Building here rather than on Vercel keeps the build logs, the Node
+        # version and the lockfile resolution identical to the CI workflow.
+        run: vercel build --prod --token="$VERCEL_TOKEN"
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+
+      - name: Deploy prebuilt artifacts
+        id: deploy
+        # `--archive=tgz` uploads one compressed archive instead of thousands of
+        # individual files, which is dramatically faster and avoids upload rate
+        # limits on projects with large build outputs.
+        run: |
+          url=$(vercel deploy --prebuilt --prod --archive=tgz --token="$VERCEL_TOKEN")
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+          echo "Deployed to $url" >> "$GITHUB_STEP_SUMMARY"
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}

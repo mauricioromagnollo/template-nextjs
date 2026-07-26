@@ -1,0 +1,56 @@
+# Static application security testing with GitHub CodeQL.
+#
+# Results show up under the repository's "Security > Code scanning" tab. Public
+# repositories get this for free; on a private repository it requires GitHub
+# Advanced Security, so delete this file if the template was cloned into a
+# private repository without it.
+name: CodeQL
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    # Weekly baseline scan (Mondays, 06:00 UTC): new CodeQL queries and newly
+    # disclosed patterns are caught even when the repository is idle.
+    - cron: '0 6 * * 1'
+  workflow_dispatch:
+
+concurrency:
+  group: codeql-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  analyze:
+    name: Analyze (javascript-typescript)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      # Scoped to the job: only this step needs to write scanning alerts.
+      contents: read
+      security-events: write
+      actions: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          # One language covers the whole codebase: the `javascript-typescript`
+          # pack analyzes `.js`, `.jsx`, `.ts` and `.tsx` together.
+          languages: javascript-typescript
+          queries: security-and-quality
+
+      - name: Perform CodeQL analysis
+        # No manual build step: JavaScript/TypeScript is analyzed directly from
+        # source, so `npm ci` and `next build` are unnecessary here.
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: /language:javascript-typescript
