@@ -1,0 +1,14 @@
+# Documentation toolchain, pinned like every other dependency in this repository.
+#
+# Read only by `.github/workflows/publish-docs.yml`, which runs
+# `pip install -r docs/requirements.txt` before `mkdocs build --strict`.
+# `make docs` and `make docs-build` never read this file: they run the pinned
+# `squidfunk/mkdocs-material:9.5.49` image instead, so keep the version below in
+# sync with `MKDOCS_IMAGE` in the `Makefile` or CI and local builds diverge.
+#
+# Upgrade deliberately: bump the version here *and* in the Makefile, run
+# `make docs-build` locally to confirm the strict build still passes, and commit
+# the change on its own.
+
+mkdocs-material==9.5.49
+pymdown-extensions==10.13

@@ -1,0 +1,167 @@
+# MkDocs configuration for the template-nextjs documentation site.
+#
+# The docs are published to GitHub Pages by `.github/workflows/publish-docs.yml`,
+# which runs `mkdocs build --strict`. In strict mode every warning is an error:
+# a link to a page that does not exist, or a page missing from `nav`, fails the
+# build. Add the page to `nav` in the same commit that creates the file.
+
+site_name: Next.js Template
+site_description: >-
+  An opinionated, production-ready Next.js template with 100% test coverage,
+  end-to-end tests, Docker and CI/CD.
+site_author: Maurício Romagnollo
+site_url: https://mauricioromagnollo.github.io/template-nextjs/
+
+repo_url: https://github.com/mauricioromagnollo/template-nextjs
+repo_name: mauricioromagnollo/template-nextjs
+edit_uri: edit/main/docs/
+
+docs_dir: docs
+
+copyright: Copyright &copy; 2026 Maurício Romagnollo
+
+# `requirements.txt` lives inside docs/ so the workflow can install the exact
+# MkDocs version from a single place, but it is not a page.
+exclude_docs: |
+  requirements.txt
+
+theme:
+  name: material
+  language: en
+  icon:
+    # Icons bundled with Material, so no image files are required in the repo.
+    logo: material/language-typescript
+    repo: fontawesome/brands/github
+  palette:
+    - media: '(prefers-color-scheme)'
+      toggle:
+        icon: material/brightness-auto
+        name: Switch to light mode
+    - media: '(prefers-color-scheme: light)'
+      scheme: default
+      primary: black
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - media: '(prefers-color-scheme: dark)'
+      scheme: slate
+      primary: black
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to system preference
+  font:
+    text: Inter
+    code: JetBrains Mono
+  features:
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.sections
+    - navigation.instant
+    - navigation.instant.progress
+    - navigation.top
+    - navigation.tracking
+    - navigation.footer
+    - search.highlight
+    - search.suggest
+    - search.share
+    - toc.follow
+    - content.code.copy
+    - content.code.annotate
+    - content.action.edit
+    - content.tabs.link
+    - content.tooltips
+
+plugins:
+  - search
+
+markdown_extensions:
+  - abbr
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+      permalink_title: Anchor link to this section
+      toc_depth: 3
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.caret
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.mark
+  - pymdownx.smartsymbols
+  - pymdownx.snippets
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+      slugify: !!python/object/apply:pymdownx.slugs.slugify {kwds: {case: lower}}
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
+
+validation:
+  nav:
+    omitted_files: info
+    not_found: warn
+  links:
+    not_found: warn
+    absolute_links: info
+    unrecognized_links: info
+    anchors: info
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/mauricioromagnollo
+      name: Maurício Romagnollo on GitHub
+    - icon: fontawesome/brands/linkedin
+      link: https://www.linkedin.com/in/mauricioromagnollo
+      name: Maurício Romagnollo on LinkedIn
+  generator: false
+
+nav:
+  - Home: index.md
+  - Getting Started:
+      - Installation: getting-started/installation.md
+      - Project Structure: getting-started/project-structure.md
+      - Configuration: getting-started/configuration.md
+  - Architecture:
+      - Overview: architecture/index.md
+      - Conventions: architecture/conventions.md
+      - Styling: architecture/styling.md
+      - SEO & Metadata: architecture/seo.md
+      - Security: architecture/security.md
+  - Guides:
+      - Development: guides/development.md
+      - Testing: guides/testing.md
+      - Docker: guides/docker.md
+      - Deployment: guides/deployment.md
+      - CI/CD: guides/ci-cd.md
+      - Documentation: guides/documentation.md
+  - Decisions:
+      - Overview: decisions/index.md
+      - Template: decisions/template.md
+      - 0001 — 100% coverage threshold: decisions/0001-100-percent-coverage-threshold.md
+      - 0002 — Tailwind v4 CSS-first tokens: decisions/0002-tailwind-v4-css-first-design-tokens.md
+      - 0003 — Barrel imports enforced by ESLint: decisions/0003-barrel-imports-enforced-by-eslint.md
+      - 0004 — Standalone output and Docker: decisions/0004-standalone-output-and-docker.md
+  - Reference:
+      - Commands: reference/commands.md
+      - Environment Variables: reference/environment-variables.md
