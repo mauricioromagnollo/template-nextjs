@@ -1,0 +1,132 @@
+@import 'tailwindcss';
+
+/*
+ * Dark mode is class-driven — next-themes toggles `.dark` on <html> — rather
+ * than media-driven, so an explicit user choice can override the OS preference.
+ */
+@custom-variant dark (&:is(.dark, .dark *));
+
+/*
+ * Design tokens.
+ *
+ * Every colour is semantic (`background`, `muted-foreground`, `accent`), never
+ * literal (`slate-200`). Dark mode is a value swap in the `.dark` block below,
+ * which is why there is not a single `dark:` utility in the component layer.
+ *
+ * Rebranding the template is a matter of editing the two blocks below: the
+ * neutral ramp is slate, the accent is indigo. Swap the accent triplet and the
+ * whole UI follows.
+ */
+@theme {
+  --font-sans: var(--font-sans-google), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-mono-google), ui-monospace, SFMono-Regular, monospace;
+
+  /* Reading width of the page shell; drives `max-w-content`. */
+  --container-content: 1120px;
+
+  --color-background: oklch(1 0 0);
+  --color-foreground: oklch(0.21 0.034 264.665);
+
+  --color-muted: oklch(0.968 0.007 247.896);
+  --color-muted-foreground: oklch(0.554 0.046 257.417);
+
+  --color-border: oklch(0.929 0.013 255.508);
+  --color-ring: oklch(0.585 0.233 277.117);
+
+  --color-accent: oklch(0.585 0.233 277.117);
+  --color-accent-foreground: oklch(0.985 0 0);
+
+  --color-primary: oklch(0.21 0.034 264.665);
+  --color-primary-foreground: oklch(0.985 0 0);
+}
+
+/*
+ * Dark palette. Same token names, different values — nothing else in the code
+ * base needs to know which theme is active.
+ */
+.dark {
+  --color-background: oklch(0.129 0.042 264.695);
+  --color-foreground: oklch(0.984 0.003 247.858);
+
+  --color-muted: oklch(0.208 0.042 265.755);
+  --color-muted-foreground: oklch(0.704 0.04 256.788);
+
+  --color-border: oklch(0.279 0.041 260.031);
+  --color-ring: oklch(0.673 0.182 276.935);
+
+  --color-accent: oklch(0.673 0.182 276.935);
+  --color-accent-foreground: oklch(0.129 0.042 264.695);
+
+  --color-primary: oklch(0.984 0.003 247.858);
+  --color-primary-foreground: oklch(0.208 0.042 265.755);
+}
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  .dark {
+    color-scheme: dark;
+  }
+
+  * {
+    border-color: var(--color-border);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    /* Keeps anchored sections clear of the sticky header. */
+    scroll-padding-top: 5rem;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Selection and focus inherit the accent so a rebrand stays consistent. */
+  ::selection {
+    background-color: var(--color-accent);
+    color: var(--color-accent-foreground);
+  }
+}
+
+/*
+ * Theme transition.
+ *
+ * Colours are intentionally *not* transitioned by default: doing so makes the
+ * first paint fade in and drags every hover state. Instead the theme toggle
+ * adds `.theme-transition` to <html> for the duration of the swap, so only the
+ * light/dark change is animated.
+ */
+.theme-transition,
+.theme-transition *,
+.theme-transition *::before,
+.theme-transition *::after {
+  transition:
+    background-color 250ms ease,
+    border-color 250ms ease,
+    color 250ms ease,
+    fill 250ms ease,
+    stroke 250ms ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
