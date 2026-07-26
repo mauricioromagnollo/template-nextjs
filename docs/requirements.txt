@@ -3,12 +3,21 @@
 # Read only by `.github/workflows/publish-docs.yml`, which runs
 # `pip install -r docs/requirements.txt` before `mkdocs build --strict`.
 # `make docs` and `make docs-build` never read this file: they run the pinned
-# `squidfunk/mkdocs-material:9.5.49` image instead, so keep the version below in
+# `squidfunk/mkdocs-material:9.7.7` image instead, so keep the version below in
 # sync with `MKDOCS_IMAGE` in the `Makefile` or CI and local builds diverge.
 #
-# Upgrade deliberately: bump the version here *and* in the Makefile, run
-# `make docs-build` locally to confirm the strict build still passes, and commit
-# the change on its own.
+# `Markdown` is pinned explicitly even though it is only a transitive dependency.
+# Leaving it floating is not cosmetic: `pymdown-extensions==10.13` resolved
+# against a newer `Markdown` registers SuperFences without it ever running, so
+# every fenced code block renders as a literal paragraph, and any HTML-looking
+# token inside one (`<div>`, `<meta>`, `<your-user>`) then swallows the rest of
+# the page. `mkdocs build --strict` still exits 0, so the damage is invisible
+# until someone reads the published site.
+#
+# Upgrade deliberately: bump the versions here *and* in the Makefile, run
+# `make docs-build`, and open a page with code blocks in the generated `site/`
+# before committing.
 
-mkdocs-material==9.5.49
-pymdown-extensions==10.13
+mkdocs-material==9.7.7
+pymdown-extensions==11.0.1
+Markdown==3.10.2

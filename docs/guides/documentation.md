@@ -11,7 +11,7 @@ make docs
 ```
 
 Serves the site at <http://localhost:8000> with live reload — save a Markdown file and the browser
-updates. The target runs the pinned `squidfunk/mkdocs-material:9.5.49` image with the repository bind
+updates. The target runs the pinned `squidfunk/mkdocs-material:9.7.7` image with the repository bind
 -mounted at `/docs`, so **Docker is the only requirement**: no Python, no virtualenv, and nothing
 installed on your machine. Override the port with `make docs DOCS_PORT=8080`.
 
@@ -255,8 +255,8 @@ the archive is that it shows how thinking evolved.
 MkDocs and its plugins are pinned like every other dependency:
 
 ```text title="docs/requirements.txt"
-mkdocs-material==9.5.49
-pymdown-extensions==10.13
+mkdocs-material==9.7.7
+pymdown-extensions==11.0.1
 ```
 
 To upgrade: bump the version, run `make docs-build` locally, confirm the strict build still passes,

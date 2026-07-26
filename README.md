@@ -167,7 +167,7 @@ way when your project needs to become something else.
 | Git hooks       | [husky](https://typicode.github.io/husky) + `lint-staged`        | 9.1.7 / 17.2.0   |
 | Commit linting  | `@commitlint/cli` + `@commitlint/config-conventional`            | 21.2.1 / 21.2.0  |
 | Analytics       | `@vercel/analytics` and `@vercel/speed-insights`                 | 2.0.1 / 2.0.0    |
-| Documentation   | [MkDocs Material](https://squidfunk.github.io/mkdocs-material/)  | 9.5.49           |
+| Documentation   | [MkDocs Material](https://squidfunk.github.io/mkdocs-material/)  | 9.7.7            |
 | Containers      | Docker (`node:24.16.0-slim`, multi-stage) + Compose              | —                |
 | CI/CD           | GitHub Actions, CodeQL, Dependabot, Vercel                       | —                |
 

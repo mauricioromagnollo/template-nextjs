@@ -110,8 +110,8 @@ vocabulary regardless of whether the work happens in npm, Docker Compose or a Do
 | Target | Removes / runs | Notes |
 | --- | --- | --- |
 | `make clean` | `./scripts/clear-all.sh` — `.next/`, `out/`, `build/`, `dist/`, `coverage/`, `test-results/`, `playwright-report/`, `blob-report/`, `playwright/.cache`, `site/`, `.swc`, `.turbo`, `next-env.d.ts`, `*.tsbuildinfo` **and `node_modules/`** | Returns the clone to a freshly-cloned state, so `make setup` (or `make install`) is required afterwards. Falls back to `sudo` for files the Docker dev container left root-owned. |
-| `make docs` | `docker run --rm -it -p 8000:8000 -v $(CURDIR):/docs squidfunk/mkdocs-material:9.5.49` | Documentation preview on <http://localhost:8000> with live reload. **Docker is required** — there is no Python virtualenv; the image ships the pinned toolchain. Override the port with `make docs DOCS_PORT=8080`. |
-| `make docs-build` | `docker run --rm -v $(CURDIR):/docs squidfunk/mkdocs-material:9.5.49 build --strict` | The same `mkdocs build --strict` that `publish-docs.yml` runs (CI installs `docs/requirements.txt` with pip instead of using the image; the versions are kept in sync). Fails on a broken link or a page missing from `nav:`. Run before pushing docs changes. |
+| `make docs` | `docker run --rm -it -p 8000:8000 -v $(CURDIR):/docs squidfunk/mkdocs-material:9.7.7` | Documentation preview on <http://localhost:8000> with live reload. **Docker is required** — there is no Python virtualenv; the image ships the pinned toolchain. Override the port with `make docs DOCS_PORT=8080`. |
+| `make docs-build` | `docker run --rm -v $(CURDIR):/docs squidfunk/mkdocs-material:9.7.7 build --strict` | The same `mkdocs build --strict` that `publish-docs.yml` runs (CI installs `docs/requirements.txt` with pip instead of using the image; the versions are kept in sync). Fails on a broken link or a page missing from `nav:`. Run before pushing docs changes. |
 
 ---
 
