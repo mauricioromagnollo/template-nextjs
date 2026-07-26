@@ -1,0 +1,36 @@
+cff-version: 1.2.0
+message: 'If you use this template, please cite it as below.'
+title: 'template-nextjs: an opinionated, production-ready Next.js starter template'
+abstract: >-
+  An opinionated, production-ready Next.js template for building sites, blogs and
+  landing pages. Ships with the App Router and React Server Components, TypeScript in
+  strict mode, a Tailwind CSS design system with dark mode, SEO and security header
+  defaults, a unit test suite with a 100% coverage floor, Playwright end-to-end tests,
+  Docker images, a Makefile front door, GitHub Actions CI/CD and a MkDocs Material
+  documentation site.
+type: software
+authors:
+  - given-names: Maurício
+    family-names: Romagnollo
+    email: mauricioromagnollo@gmail.com
+    alias: mauricioromagnollo
+repository-code: 'https://github.com/mauricioromagnollo/template-nextjs'
+url: 'https://mauricioromagnollo.github.io/template-nextjs/'
+license: MIT
+version: 1.0.0
+date-released: '2026-07-25'
+keywords:
+  - nextjs
+  - react
+  - typescript
+  - tailwindcss
+  - template
+  - boilerplate
+  - starter
+  - vitest
+  - playwright
+  - testing
+  - docker
+  - github-actions
+  - seo
+  - web-development
