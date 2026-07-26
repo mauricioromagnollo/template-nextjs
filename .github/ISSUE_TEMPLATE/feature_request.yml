@@ -1,0 +1,90 @@
+name: Feature request
+description: Suggest an improvement or a new capability for the template.
+title: 'feat: '
+labels:
+  - enhancement
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping shape the template.
+
+        This project aims to stay a **lean, opinionated starter** — every addition is weight that every user inherits. Proposals that remove friction for most projects are far more likely to land than ones that serve a single use case. If you are not sure yet, a [discussion](https://github.com/mauricioromagnollo/template-nextjs/discussions) is a good place to float the idea first.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve?
+      description: Describe the friction you hit, not the solution. Concrete situations beat abstract wishes.
+      placeholder: Every project I start from this template needs a bundle-size check in CI, and I end up writing the same workflow by hand each time.
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution
+      description: What should the template do? Include the API, config or file layout you have in mind, and what a user would have to do to opt out of it.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Affected area
+      description: Which part of the template would this touch?
+      multiple: true
+      options:
+        - Tooling and CI
+        - Testing (Vitest or Playwright)
+        - Design system and UI components
+        - SEO and metadata
+        - Documentation
+        - Docker
+        - Accessibility
+        - Performance
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: What else did you try or weigh? Explain why an existing library, a snippet in the docs, or leaving this to each project would not be enough.
+    validations:
+      required: false
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Links to prior art in other starters, relevant RFCs or upstream issues, mockups, or example code.
+    validations:
+      required: false
+
+  - type: dropdown
+    id: contribution
+    attributes:
+      label: Would you be willing to work on this?
+      options:
+        - 'Yes, I can open a pull request'
+        - 'Yes, with some guidance on where to start'
+        - 'No, but I am happy to test and review it'
+        - 'No'
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: before-submitting
+    attributes:
+      label: Before submitting
+      options:
+        - label: I searched the [existing issues](https://github.com/mauricioromagnollo/template-nextjs/issues?q=is%3Aissue) and this has not been proposed yet.
+          required: true
+        - label: I checked the [documentation](https://mauricioromagnollo.github.io/template-nextjs/) and this is not already possible.
+          required: true
+        - label: This benefits most projects built from the template, not only my own.
+          required: true
+        - label: I agree to follow this project's [Code of Conduct](https://github.com/mauricioromagnollo/template-nextjs/blob/main/CODE_OF_CONDUCT.md).
+          required: true

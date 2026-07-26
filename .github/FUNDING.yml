@@ -1,0 +1,23 @@
+# Renders the "Sponsor" button at the top of the repository.
+#
+# Cloning this template? Replace the handle below with your own, or delete this
+# file entirely — GitHub simply hides the button when there is nothing to show.
+# Every commented key is supported by GitHub; uncomment only the platforms you
+# actually use, since a dead link is worse than no button at all.
+#
+# Docs: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/displaying-a-sponsor-button-in-your-repository
+
+github: [mauricioromagnollo]
+
+# patreon: # a single Patreon username
+# open_collective: # a single Open Collective slug
+# ko_fi: # a single Ko-fi username
+# tidelift: # a Tidelift platform-name/package-name, e.g. npm/template-nextjs
+# community_bridge: # a single Community Bridge project name
+# liberapay: # a single Liberapay username
+# issuehunt: # a single IssueHunt username
+# lfx_mentorship: # a single LFX Mentorship slug
+# polar: # a single Polar username
+# buy_me_a_coffee: # a single Buy Me a Coffee username
+# thanks_dev: # a single thanks.dev username
+# custom: # up to four custom URLs, e.g. ['https://example.com/donate']
