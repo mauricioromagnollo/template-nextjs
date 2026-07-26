@@ -1,0 +1,54 @@
+name: Question
+description: Ask how to do something with the template.
+title: 'docs: '
+labels:
+  - question
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Most questions are already answered in the [documentation](https://mauricioromagnollo.github.io/template-nextjs/) — it covers setup, project structure, testing, Docker and deployment.
+
+        For open-ended conversations, [Discussions](https://github.com/mauricioromagnollo/template-nextjs/discussions) is usually a better fit. Use this form when the answer probably belongs in the docs, so the question turns into a documentation improvement.
+
+  - type: textarea
+    id: question
+    attributes:
+      label: What would you like to know?
+      description: Be as specific as you can. Include the command you ran, the file you are editing, or the snippet you are stuck on.
+      placeholder: How do I add a route that is excluded from the sitemap without dropping below the 100% coverage threshold?
+    validations:
+      required: true
+
+  - type: textarea
+    id: tried
+    attributes:
+      label: What have you tried so far?
+      description: Which docs pages did you read, and what did you attempt? This tells us where the documentation let you down.
+    validations:
+      required: false
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Only if the question is environment-specific.
+      value: |
+        - Node.js:
+        - Operating system:
+        - Template version (commit SHA or release tag):
+      render: markdown
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: before-submitting
+    attributes:
+      label: Before submitting
+      options:
+        - label: I searched the [existing issues](https://github.com/mauricioromagnollo/template-nextjs/issues?q=is%3Aissue) and the [documentation](https://mauricioromagnollo.github.io/template-nextjs/).
+          required: true
+        - label: This is a question about the template itself, not general Next.js or React support.
+          required: true
+        - label: I agree to follow this project's [Code of Conduct](https://github.com/mauricioromagnollo/template-nextjs/blob/main/CODE_OF_CONDUCT.md).
+          required: true

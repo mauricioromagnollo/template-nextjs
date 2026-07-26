@@ -1,0 +1,18 @@
+# Blank issues are disabled so every report arrives with the context the
+# maintainers need. Use one of the forms in this directory instead.
+#
+# Cloning this template? Update the URLs below to point at your own repository.
+blank_issues_enabled: false
+
+contact_links:
+  - name: Report a security vulnerability
+    url: https://github.com/mauricioromagnollo/template-nextjs/security/advisories/new
+    about: Never report vulnerabilities in a public issue. Open a private security advisory instead — see SECURITY.md for the disclosure policy.
+
+  - name: Documentation
+    url: https://mauricioromagnollo.github.io/template-nextjs/
+    about: Setup, project structure, testing, Docker and deployment guides. Most usage questions are answered here.
+
+  - name: Ask a question or share an idea
+    url: https://github.com/mauricioromagnollo/template-nextjs/discussions
+    about: Open-ended questions, ideas and show-and-tell belong in Discussions, where the whole community can chime in.

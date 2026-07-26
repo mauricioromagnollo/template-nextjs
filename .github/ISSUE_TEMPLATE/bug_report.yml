@@ -1,0 +1,110 @@
+name: Bug report
+description: Something in the template is broken or behaves unexpectedly.
+title: 'fix: '
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to file a report.
+
+        Before continuing, please make sure this is a bug in the template itself and not a question about how to use it — for those, open a [discussion](https://github.com/mauricioromagnollo/template-nextjs/discussions) or a `Question` issue.
+
+        **Found a security vulnerability?** Do not open a public issue. Report it privately through [GitHub Security Advisories](https://github.com/mauricioromagnollo/template-nextjs/security/advisories/new), as described in [SECURITY.md](https://github.com/mauricioromagnollo/template-nextjs/blob/main/SECURITY.md).
+
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: A clear, self-contained description of the bug. Include the error message verbatim if there is one.
+      placeholder: '`npm run build` fails after adding a route group, with a "Module not found" error pointing at a path that exists.'
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to reproduce
+      description: |
+        The minimal sequence of steps that triggers the bug, starting from a fresh clone of the template. A link to a repository that reproduces it is the fastest way to get this fixed.
+      value: |
+        1. Create a repository from the template
+        2. Run `npm ci`
+        3. Run `...`
+        4. See the error
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behaviour
+      description: What did you expect to happen instead?
+      placeholder: The build should complete and emit the production output under `.next/`.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: surface
+    attributes:
+      label: Where does it happen?
+      description: Select every context where you reproduced the problem.
+      multiple: true
+      options:
+        - Development server (`npm run dev`)
+        - Production build (`npm run build` / `npm run start`)
+        - Test suite (Vitest or Playwright)
+        - Deployed site (Vercel or other host)
+        - Docker image
+        - Tooling (ESLint, Prettier, TypeScript, husky, commitlint)
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: |
+        Fill in the versions you are running. `node --version` and `npm --version` print the first two; the template version is the commit or release you started from.
+      value: |
+        - Node.js:
+        - npm:
+        - Operating system:
+        - Browser (if relevant):
+        - Template version (commit SHA or release tag):
+      render: markdown
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Screenshots and logs
+      description: |
+        Paste the full terminal output, stack trace or CI log. Screenshots help for anything visual. Long logs are fine — they are collapsed automatically.
+      render: shell
+    validations:
+      required: false
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Anything else worth knowing — a workaround you found, when it started happening, or how far you got debugging it.
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: before-submitting
+    attributes:
+      label: Before submitting
+      options:
+        - label: I searched the [existing issues](https://github.com/mauricioromagnollo/template-nextjs/issues?q=is%3Aissue) and this has not been reported yet.
+          required: true
+        - label: This is not a security vulnerability. Security reports go through [private advisories](https://github.com/mauricioromagnollo/template-nextjs/security/advisories/new).
+          required: true
+        - label: I reproduced this on an up-to-date clone of the template, with dependencies installed via `npm ci`.
+          required: true
+        - label: I agree to follow this project's [Code of Conduct](https://github.com/mauricioromagnollo/template-nextjs/blob/main/CODE_OF_CONDUCT.md).
+          required: true
