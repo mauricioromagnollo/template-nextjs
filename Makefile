@@ -24,7 +24,7 @@ NEXT_PUBLIC_SITE_URL  ?= http://localhost:3000
 NEXT_PUBLIC_SITE_NAME ?= Next.js Template
 
 # Pinned so the docs render identically for everyone and in CI.
-MKDOCS_IMAGE ?= squidfunk/mkdocs-material:9.5.49
+MKDOCS_IMAGE ?= squidfunk/mkdocs-material:9.7.7
 DOCS_PORT    ?= 8000
 
 # ##############################################################################

@@ -58,6 +58,19 @@ jobs:
         # quietly degraded.
         run: mkdocs build --strict
 
+      # `--strict` cannot catch this one. When the Markdown toolchain resolves to
+      # an incompatible combination, SuperFences registers but never runs: fenced
+      # code blocks render as literal paragraphs, and an HTML-looking token
+      # inside one swallows the rest of the page. The build still exits 0.
+      - name: Verify code blocks rendered
+        run: |
+          if grep -rlF '<p>```' site --include='*.html'; then
+            echo "::error::Fenced code blocks rendered as literal text in the files above."
+            echo "::error::The docs toolchain in docs/requirements.txt is resolving to an incompatible set."
+            exit 1
+          fi
+          echo "All fenced code blocks rendered as code."
+
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
