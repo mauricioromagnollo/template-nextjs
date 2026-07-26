@@ -5,7 +5,11 @@ node_modules
 .yarn/install-state.gz
 
 # Testing
-coverage
+#
+# Build output directories are anchored with a leading slash so they only match
+# at the repository root. An unanchored `site/` would also swallow a legitimate
+# `src/config/site/`, and the file would be silently missing from the clone.
+/coverage/
 .swc
 
 # Playwright (E2E)
@@ -15,12 +19,12 @@ coverage
 /playwright/.cache/
 
 # Next.js
-.next/
-out/
+/.next/
+/out/
 
 # Production
-build
-dist
+/build/
+/dist/
 
 # Misc
 .DS_Store
@@ -45,10 +49,10 @@ yarn-error.log*
 next-env.d.ts
 
 # Temporary
-tmp/
+/tmp/
 
 # MkDocs build output
-site/
+/site/
 
 # AI assistant workspaces
 .agents
